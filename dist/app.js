@@ -11,16 +11,32 @@ let selectedFile = null;
 let outputUrls = [];
 
 const formatBytes = (bytes) => { if (!bytes) return '0 B'; const units = ['B', 'KB', 'MB', 'GB']; const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1); return `${(bytes / Math.pow(1024, index)).toFixed(index ? 2 : 0)} ${units[index]}`; };
-const baseName = (name) => name.replace(/\.pdf$/i, '');
+const baseName = (name) => name.replace(/\.pdf$/i, '') || 'document';
 const setError = (message) => { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); };
 const clearError = () => { errorMessage.textContent = ''; errorMessage.classList.add('hidden'); };
 const setStatus = (title, detail) => { $('#status-title').textContent = title; $('#status-detail').textContent = detail; };
 
-function setFile(file) {
+function explainError(error) {
+  const message = String(error?.message || error || '').toLowerCase();
+  if (/password|encrypted|encryption|passwordexception/.test(message)) return 'PDF นี้มีรหัสผ่านหรือการเข้ารหัส จึงไม่สามารถลบ Metadata ได้โดยไม่มีรหัสผ่าน';
+  if (/worker|pdf renderer|pdf\.js|metadata library/.test(message)) return 'เครื่องมืออ่าน PDF โหลดไม่ครบ กรุณารีเฟรชหน้าเว็บแล้วลองใหม่';
+  if (/invalid|parse|malformed|unexpected|xref|cross-reference|eof|trailer/.test(message)) return 'โครงสร้าง PDF นี้ซับซ้อนหรือไม่สมบูรณ์ กรุณาเปิดไฟล์แล้วเลือก Save As PDF ใหม่';
+  if (/webp export/.test(message)) return 'เบราว์เซอร์นี้ไม่รองรับการสร้าง WebP กรุณาใช้ Chrome หรือ Edge เวอร์ชันล่าสุด';
+  return 'ไม่สามารถประมวลผล PDF นี้ได้ กรุณาลองเปิดแล้ว Save As PDF ใหม่';
+}
+
+async function isPdfFile(file) {
+  const header = new Uint8Array(await file.slice(0, 1024).arrayBuffer());
+  const text = new TextDecoder().decode(header);
+  return text.includes('%PDF-') || file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+}
+
+async function setFile(file) {
   clearError();
-  if (!file || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) { setError('กรุณาเลือกไฟล์ PDF เท่านั้น'); return; }
+  if (!file) return;
+  if (!(await isPdfFile(file))) { setError('ไฟล์นี้ไม่ใช่ PDF ที่อ่านได้ กรุณาเลือกไฟล์ PDF'); return; }
   selectedFile = file;
-  $('#file-name').textContent = file.name;
+  $('#file-name').textContent = file.name || 'document.pdf';
   $('#file-size').textContent = formatBytes(file.size);
   fileCard.classList.remove('hidden');
   processButton.disabled = false;
@@ -30,10 +46,10 @@ function setFile(file) {
 
 dropzone.addEventListener('click', () => input.click());
 dropzone.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); } });
-input.addEventListener('change', (event) => setFile(event.target.files[0]));
+input.addEventListener('change', (event) => { void setFile(event.target.files[0]); });
 ['dragenter', 'dragover'].forEach((eventName) => dropzone.addEventListener(eventName, (event) => { event.preventDefault(); dropzone.classList.add('dragover'); }));
 ['dragleave', 'drop'].forEach((eventName) => dropzone.addEventListener(eventName, (event) => { event.preventDefault(); dropzone.classList.remove('dragover'); }));
-dropzone.addEventListener('drop', (event) => setFile(event.dataTransfer.files[0]));
+dropzone.addEventListener('drop', (event) => { void setFile(event.dataTransfer.files[0]); });
 $('#remove-file').addEventListener('click', resetAll);
 $('#reset-button').addEventListener('click', resetAll);
 
@@ -48,7 +64,6 @@ function resetAll() {
   results.classList.remove('ready');
   statusPanel.classList.add('hidden');
   clearError();
-  window.scrollTo({ top: document.querySelector('.workspace').offsetTop - 30, behavior: 'smooth' });
 }
 
 function configurePdfJs() {
@@ -58,7 +73,7 @@ function configurePdfJs() {
 
 async function openPdf(data) {
   configurePdfJs();
-  return window.pdfjsLib.getDocument({ data: new Uint8Array(data) }).promise;
+  return window.pdfjsLib.getDocument({ data: new Uint8Array(data), stopAtErrors: false, useSystemFonts: true }).promise;
 }
 
 async function renderPage(data, pageNumber = 1, targetMax = 1400) {
@@ -94,7 +109,7 @@ async function createCover(fileBuffer, maxKB) {
 async function stripMetadata(buffer) {
   if (!window.PDFLib) throw new Error('PDF metadata library is unavailable');
   const { PDFDocument, PDFName, PDFDict } = window.PDFLib;
-  const pdfDoc = await PDFDocument.load(buffer, { updateMetadata: false, ignoreEncryption: false });
+  const pdfDoc = await PDFDocument.load(buffer, { updateMetadata: false, ignoreEncryption: false, throwOnInvalidObject: false });
   const infoRef = pdfDoc.context.trailerInfo.Info;
   if (infoRef) {
     const info = pdfDoc.context.lookup(infoRef);
@@ -105,7 +120,13 @@ async function stripMetadata(buffer) {
     const catalog = pdfDoc.context.lookup(rootRef);
     if (catalog && typeof catalog.delete === 'function') catalog.delete(PDFName.of('Metadata'));
   }
-  return pdfDoc.save({ useObjectStreams: false, addDefaultPage: false, updateFieldAppearances: false });
+  return pdfDoc.save({ useObjectStreams: false, addDefaultPage: false, updateFieldAppearances: false, objectsPerTick: 50 });
+}
+
+function hasXmpMetadata(metadata) {
+  if (!metadata?.metadata) return false;
+  if (typeof metadata.metadata.getAll === 'function') return Object.keys(metadata.metadata.getAll()).length > 0;
+  return false;
 }
 
 async function readVerification(originalBytes, cleanedBytes, coverBlob) {
@@ -125,7 +146,7 @@ async function readVerification(originalBytes, cleanedBytes, coverBlob) {
   }
   const metadata = await cleanedPdf.getMetadata().catch(() => ({ info: {}, metadata: null }));
   const remainingInfo = metadataKeys.filter((key) => metadata.info && metadata.info[key] !== undefined && metadata.info[key] !== null && String(metadata.info[key]).trim() !== '');
-  const metadataCleared = remainingInfo.length === 0 && !metadata.metadata;
+  const metadataCleared = remainingInfo.length === 0 && !hasXmpMetadata(metadata);
   return { pagesMatch, renderMatch, metadataCleared, coverWithinLimit: Boolean(coverBlob), differentPixels };
 }
 
@@ -145,7 +166,8 @@ processButton.addEventListener('click', async () => {
   try {
     const buffer = await selectedFile.arrayBuffer();
     const maxKB = 500;
-    setStatus('กำลังลบ metadata…', 'สร้าง PDF ใหม่โดยไม่บีบอัดและไม่เปลี่ยนหน้าเอกสาร');
+    await openPdf(buffer);
+    setStatus('กำลังลบ metadata…', 'ใช้โหมดอ่าน PDF แบบ tolerant โดยไม่บีบอัดเนื้อหา');
     const cleanedBytes = await stripMetadata(buffer);
     setStatus('กำลังสร้าง cover…', `เรนเดอร์หน้าแรกเป็น WebP ไม่เกิน ${maxKB} KB`);
     const cover = await createCover(buffer, maxKB);
@@ -179,7 +201,7 @@ processButton.addEventListener('click', async () => {
   } catch (error) {
     statusPanel.classList.add('hidden');
     processButton.disabled = false;
-    setError('ไม่สามารถประมวลผลไฟล์นี้ได้ กรุณาลองเลือก PDF อื่น');
-    console.error(error);
+    setError(explainError(error));
+    console.error('PDF Prep Studio processing error:', error);
   }
 });
