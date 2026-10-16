@@ -25,7 +25,7 @@ function setFile(file) {
   fileCard.classList.remove('hidden');
   processButton.disabled = false;
   dropzone.classList.add('hidden');
-  results.classList.add('hidden');
+  results.classList.remove('ready');
 }
 
 dropzone.addEventListener('click', () => input.click());
@@ -45,7 +45,7 @@ function resetAll() {
   fileCard.classList.add('hidden');
   dropzone.classList.remove('hidden');
   processButton.disabled = true;
-  results.classList.add('hidden');
+  results.classList.remove('ready');
   statusPanel.classList.add('hidden');
   clearError();
   window.scrollTo({ top: document.querySelector('.workspace').offsetTop - 30, behavior: 'smooth' });
@@ -175,7 +175,7 @@ processButton.addEventListener('click', async () => {
     $('#overall-badge').classList.toggle('warning-badge', !allPassed);
     statusPanel.classList.add('hidden');
     results.classList.remove('hidden');
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    results.classList.add('ready');
   } catch (error) {
     statusPanel.classList.add('hidden');
     processButton.disabled = false;
