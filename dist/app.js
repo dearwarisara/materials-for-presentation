@@ -6,7 +6,6 @@ const processButton = $('#process-button');
 const statusPanel = $('#status-panel');
 const errorMessage = $('#error-message');
 const results = $('#results');
-const webpLimit = $('#webp-limit');
 const metadataKeys = ['Title', 'Author', 'Subject', 'Keywords', 'Creator', 'Producer', 'CreationDate', 'ModDate'];
 let selectedFile = null;
 let outputUrls = [];
@@ -145,7 +144,7 @@ processButton.addEventListener('click', async () => {
   setStatus('กำลังอ่านไฟล์…', 'ตรวจสอบโครงสร้าง PDF และจำนวนหน้า');
   try {
     const buffer = await selectedFile.arrayBuffer();
-    const maxKB = Number(webpLimit.value);
+    const maxKB = 500;
     setStatus('กำลังลบ metadata…', 'สร้าง PDF ใหม่โดยไม่บีบอัดและไม่เปลี่ยนหน้าเอกสาร');
     const cleanedBytes = await stripMetadata(buffer);
     setStatus('กำลังสร้าง cover…', `เรนเดอร์หน้าแรกเป็น WebP ไม่เกิน ${maxKB} KB`);
