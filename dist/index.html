@@ -13,58 +13,27 @@
   <body>
     <div class="page-shell">
       <header class="topbar">
-        <a class="brand" href="#top" aria-label="materials for presentation home">
-          <span class="brand-mark"><span></span><span></span><span></span></span>
-          <span>materials <em>for</em> presentation</span>
-        </a>
-        <div class="privacy-chip"><span class="status-dot"></span> ประมวลผลในเครื่อง</div>
+        <a class="brand" href="#top" aria-label="materials for presentation home"><span class="brand-mark"><span></span><span></span><span></span></span><span>materials <em>for</em> presentation</span></a>
+        <nav class="nav-links" aria-label="เมนูหลัก"><a href="#workspace">เริ่มใช้งาน</a><a href="#how-it-works">วิธีทำงาน</a><span class="privacy-chip"><i></i> local-only</span></nav>
       </header>
 
       <main id="top">
         <section class="hero">
           <div class="hero-copy">
-            <p class="eyebrow">PRIVATE PDF WORKSPACE <span>•</span> 01</p>
-            <p class="hero-lede">ลบข้อมูล metadata ที่ไม่จำเป็นออกจาก PDF และสร้างภาพปกจากหน้าแรกให้พร้อมดาวน์โหลด — ไฟล์ของคุณไม่ออกจากเครื่อง</p>
-            <div class="hero-notes">
-              <div><strong>01</strong><span>เลือกไฟล์ PDF</span></div>
-              <div><strong>02</strong><span>ล้าง metadata</span></div>
-              <div><strong>03</strong><span>ดาวน์โหลดผลลัพธ์</span></div>
-            </div>
+            <p class="eyebrow"><span class="eyebrow-dot"></span> DOCUMENT PREP STUDIO <span class="slash">/</span> 01</p>
+            <h1>Clean files.<br /><span>Clear story.</span></h1>
+            <p class="hero-lede">เตรียมเอกสารให้พร้อมก่อนขึ้นสไลด์ ลบ metadata ที่ไม่จำเป็น และสร้าง cover จากหน้าแรกในไม่กี่คลิก</p>
+            <div class="hero-actions"><a class="text-link" href="#workspace">เริ่มจากไฟล์ของคุณ <span>↓</span></a><span class="hero-note">PDF <b>→</b> clean PDF + WebP cover</span></div>
           </div>
-          <div class="hero-orbit" aria-hidden="true">
-            <div class="orbit-ring ring-a"></div><div class="orbit-ring ring-b"></div>
-            <div class="orbit-label label-top">NO UPLOADS</div><div class="orbit-label label-bottom">FIRST PAGE → WEBP</div>
-            <div class="pdf-tile"><div class="tile-top"><span class="tile-badge">PDF</span><span class="tile-index">01</span></div><div class="tile-lines"><i></i><i></i><i></i><i></i></div><div class="tile-corner">↗</div></div>
-            <div class="spark spark-one">✦</div><div class="spark spark-two">✦</div>
-          </div>
+          <div class="hero-visual" aria-hidden="true"><div class="visual-grid"></div><div class="visual-tag tag-top">NO UPLOADS</div><div class="visual-tag tag-bottom">READY FOR THE ROOM</div><div class="paper-shadow"></div><div class="paper-card"><div class="paper-header"><span class="paper-label">MATERIAL / 01</span><span class="paper-arrow">↗</span></div><div class="paper-title">Your<br /><span>story</span><br />starts here.</div><div class="paper-footer"><span>PDF CLEANUP</span><span>2026</span></div></div><div class="accent-sticker"><span>✦</span><small>FIRST PAGE<br />COVER</small></div></div>
         </section>
 
-        <section class="workspace" aria-labelledby="workspace-title">
-          <div class="section-heading"><div><p class="eyebrow">WORKSPACE</p><h2 id="workspace-title">เริ่มจากไฟล์ของคุณ</h2></div><p class="section-meta">รองรับ PDF ทุกขนาด<br />แนะนำไม่เกิน 20 MB</p></div>
-          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="เลือกไฟล์ PDF">
-            <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
-            <div class="drop-icon">↓</div><div class="drop-copy"><strong>วาง PDF ที่นี่</strong><span>หรือ <u>เลือกไฟล์จากเครื่อง</u></span></div><div class="drop-hint">PDF เท่านั้น · ไฟล์ต้นฉบับจะไม่ถูกแก้ไข</div>
-          </div>
+        <section class="process-strip" id="how-it-works" aria-label="ขั้นตอนการทำงาน"><div class="process-intro"><span class="section-number">00</span><strong>สามขั้นตอน<br />ก่อนนำเสนอ</strong></div><div class="process-step"><span>01</span><strong>เลือกไฟล์</strong><small>วาง PDF หรือเลือกจากเครื่อง</small></div><div class="process-step"><span>02</span><strong>ล้าง metadata</strong><small>ข้อมูลต้นฉบับจะไม่ถูกแก้ไข</small></div><div class="process-step"><span>03</span><strong>ดาวน์โหลด</strong><small>รับ clean PDF และ cover</small></div></section>
 
-          <div class="file-card hidden" id="file-card">
-            <div class="file-icon">PDF</div><div class="file-details"><strong id="file-name">document.pdf</strong><span id="file-size">0 KB</span></div><button id="remove-file" class="icon-button" type="button" aria-label="นำไฟล์ออก">×</button>
-          </div>
+        <section class="workspace" id="workspace" aria-labelledby="workspace-title"><div class="section-heading"><div><p class="eyebrow"><span class="eyebrow-dot"></span> WORKSPACE</p><h2 id="workspace-title">วางไฟล์ แล้วไปต่อ</h2></div><div class="section-meta"><span class="meta-chip">PDF only</span><span>แนะนำไม่เกิน 20 MB</span></div></div><div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="เลือกไฟล์ PDF"><input id="file-input" type="file" accept="application/pdf,.pdf" hidden /><div class="drop-icon"><span>↓</span></div><div class="drop-copy"><strong>วาง PDF ที่นี่</strong><span>หรือ <u>เลือกไฟล์จากเครื่อง</u></span></div><div class="drop-hint">ไฟล์ต้นฉบับจะไม่ถูกแก้ไข · ประมวลผลในเบราว์เซอร์ของคุณ</div></div><div class="file-card hidden" id="file-card"><div class="file-icon">PDF</div><div class="file-details"><strong id="file-name">document.pdf</strong><span id="file-size">0 KB</span></div><button id="remove-file" class="icon-button" type="button" aria-label="นำไฟล์ออก">×</button></div><div class="action-row"><button class="primary-button" id="process-button" type="button" disabled><span id="process-label">ลบ metadata และสร้าง cover</span><span class="button-arrow">↗</span></button><p class="action-caption"><span class="lock-icon">▣</span> local-only<br />ไม่มีการส่งไฟล์ไปที่เซิร์ฟเวอร์</p></div><div class="status-panel hidden" id="status-panel" aria-live="polite"><div class="status-spinner"></div><div><strong id="status-title">กำลังเตรียมไฟล์…</strong><span id="status-detail">กำลังอ่านโครงสร้าง PDF</span></div></div><p class="error-message hidden" id="error-message" role="alert"></p></section>
 
-          <div class="action-row"><button class="primary-button" id="process-button" type="button" disabled><span id="process-label">ลบ metadata และสร้าง cover</span><span class="button-arrow">↗</span></button><p class="action-caption"><span class="lock-icon">▣</span> ทำงานแบบ local-only<br />ไม่มีการส่งไฟล์ไปที่เซิร์ฟเวอร์</p></div>
-          <div class="status-panel hidden" id="status-panel" aria-live="polite"><div class="status-spinner"></div><div><strong id="status-title">กำลังเตรียมไฟล์…</strong><span id="status-detail">กำลังอ่านโครงสร้าง PDF</span></div></div>
-          <p class="error-message hidden" id="error-message" role="alert"></p>
-        </section>
-
-        <section class="results hidden" id="results" aria-labelledby="results-title">
-          <div class="section-heading"><div><p class="eyebrow">READY TO DOWNLOAD</p><h2 id="results-title">ไฟล์พร้อมแล้ว</h2></div><span class="success-badge">✓ สำเร็จ</span></div>
-          <div class="result-grid">
-            <article class="result-card"><div class="result-card-top"><div class="result-type pdf-type">PDF</div><span class="result-status">METADATA REMOVED</span></div><h3 id="output-pdf-name">document_metadata-removed.pdf</h3><p id="pdf-result-meta">—</p><a class="download-button" id="pdf-download" download><span>ดาวน์โหลด PDF</span><span>↓</span></a></article>
-            <article class="result-card cover-card"><div class="result-card-top"><div class="result-type webp-type">WEBP</div><span class="result-status">PAGE 1 COVER</span></div><div class="cover-preview"><img id="cover-preview" alt="ตัวอย่าง cover จากหน้าแรกของ PDF" /></div><div class="cover-info"><div><h3 id="output-cover-name">document_page-1.webp</h3><p id="cover-result-meta">—</p></div><a class="download-button secondary" id="cover-download" download><span>ดาวน์โหลด cover</span><span>↓</span></a></div></article>
-          </div>
-          <button class="reset-button" id="reset-button" type="button">ประมวลผลไฟล์อื่น <span>↗</span></button>
-        </section>
+        <section class="results hidden" id="results" aria-labelledby="results-title"><div class="section-heading"><div><p class="eyebrow"><span class="eyebrow-dot"></span> READY TO DOWNLOAD</p><h2 id="results-title">ไฟล์พร้อมใช้งาน</h2></div><span class="success-badge">✓ สำเร็จ</span></div><div class="result-grid"><article class="result-card"><div class="result-card-top"><div class="result-type pdf-type">PDF</div><span class="result-status">METADATA REMOVED</span></div><h3 id="output-pdf-name">document_metadata-removed.pdf</h3><p id="pdf-result-meta">—</p><a class="download-button" id="pdf-download" download><span>ดาวน์โหลด PDF</span><span>↓</span></a></article><article class="result-card cover-card"><div class="result-card-top"><div class="result-type webp-type">WEBP</div><span class="result-status">PAGE 1 COVER</span></div><div class="cover-preview"><img id="cover-preview" alt="ตัวอย่าง cover จากหน้าแรกของ PDF" /></div><div class="cover-info"><div><h3 id="output-cover-name">document_page-1.webp</h3><p id="cover-result-meta">—</p></div><a class="download-button secondary" id="cover-download" download><span>ดาวน์โหลด cover</span><span>↓</span></a></div></article></div><button class="reset-button" id="reset-button" type="button">ประมวลผลไฟล์อื่น <span>↗</span></button></section>
       </main>
-
       <footer><span>MATERIALS FOR PRESENTATION</span><span>ข้อมูลของคุณอยู่กับคุณ</span><span>LOCAL / PRIVATE / SIMPLE</span></footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
